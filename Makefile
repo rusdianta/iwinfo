@@ -4,7 +4,7 @@ IWINFO_LDFLAGS     = -luci -lubox -lubus
 
 IWINFO_LIB         = libiwinfo.so
 IWINFO_LIB_LDFLAGS = $(LDFLAGS) -shared
-IWINFO_LIB_OBJ     = iwinfo_utils.o iwinfo_wext.o iwinfo_wext_scan.o iwinfo_lib.o
+IWINFO_LIB_OBJ     = iwinfo_utils.o iwinfo_lib.o
 
 IWINFO_LUA         = iwinfo.so
 IWINFO_LUA_LDFLAGS = $(LDFLAGS) -shared -L. -liwinfo -llua
@@ -14,6 +14,11 @@ IWINFO_CLI         = iwinfo
 IWINFO_CLI_LDFLAGS = $(LDFLAGS) -L. -liwinfo
 IWINFO_CLI_OBJ     = iwinfo_cli.o
 
+
+ifneq ($(filter wl wext madwifi,$(IWINFO_BACKENDS)),)
+	IWINFO_CFLAGS  += -DUSE_WEXT
+	IWINFO_LIB_OBJ += iwinfo_wext.o iwinfo_wext_scan.o
+endif
 
 ifneq ($(filter wl,$(IWINFO_BACKENDS)),)
 	IWINFO_CFLAGS  += -DUSE_WL
